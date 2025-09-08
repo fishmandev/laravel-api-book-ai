@@ -1,7 +1,7 @@
 ---
 name: prd-technical-writer
 description: Use this agent when you need to create or update Product Requirements Documents (PRDs) and technical documentation for software projects. Examples: <example>Context: User has completed implementing a new authentication system and needs documentation for future development. user: 'I just finished building the OAuth2 authentication flow with JWT tokens. Can you document this system?' assistant: 'I'll use the prd-technical-writer agent to create comprehensive technical documentation for your authentication system.' <commentary>Since the user needs technical documentation created, use the prd-technical-writer agent to analyze the implementation and create proper PRD documentation with mermaid diagrams.</commentary></example> <example>Context: User is starting a new project and needs initial PRD documentation. user: 'I'm building a task management API with user roles and project collaboration features' assistant: 'Let me use the prd-technical-writer agent to create the initial PRD documentation for your task management system.' <commentary>The user needs PRD documentation for a new project, so use the prd-technical-writer agent to create structured technical requirements.</commentary></example>
-model: opus
+model: sonnet
 color: blue
 ---
 
