@@ -16,8 +16,8 @@ Simple Book Management API is a minimal RESTful API for book management with bas
 - **Book listing**: Pagination with 10 records per page
 
 ### User Management
-- **User fields**: Only two fields - username and password
-- **Authentication**: JWT-based login system
+- **User fields**: name, email, password, email_verified_at
+- **Authentication**: JWT-based login system using email credentials
 
 ### Roles & Permissions System
 - **Role management**: Create, read, update, delete roles
@@ -30,7 +30,7 @@ Simple Book Management API is a minimal RESTful API for book management with bas
   5. View book details (shows title + description)
 
 ### Super Administrator
-- **System user**: ID=1, username="system" - bypasses all gates and policies
+- **System user**: ID=1, email="system@example.com" - bypasses all gates and policies
 - **Unrestricted access**: All operations are allowed for super administrator
 - **Deletion protection**: System user (ID=1) cannot be deleted
 
@@ -51,8 +51,10 @@ Simple Book Management API is a minimal RESTful API for book management with bas
 ### Users Table
 ```sql
 - id (primary key)
-- username (string, unique)
+- name (string)
+- email (string, unique)
 - password (hashed)
+- email_verified_at (timestamp, nullable)
 - created_at
 - updated_at
 ```
@@ -147,7 +149,7 @@ Simple Book Management API is a minimal RESTful API for book management with bas
 ### Permissions (read only)
 - **GET** `/api/permissions` - List all 5 permissions
 
-**Note**: System user with ID=1 and username="system" cannot be deleted via API.
+**Note**: System user with ID=1 and email="system@example.com" cannot be deleted via API.
 
 ---
 *Document updated: 2025-09-09*  
