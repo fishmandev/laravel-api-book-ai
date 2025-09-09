@@ -1,5 +1,7 @@
 # Universal Laravel API Architecture Document
 
+[← Back to Main PRD](./PRD-Main.md)
+
 ## Overview
 
 This document describes universal architectural principles for Laravel API applications, focused on core Laravel components to create an easily maintainable codebase. The architecture can be applied to any domain and application type.
