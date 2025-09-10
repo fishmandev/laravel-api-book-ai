@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Configure Scramble JWT authentication (only available in dev due to require-dev)
+        // @codeCoverageIgnoreStart
         if (class_exists(Scramble::class)) {
             Scramble::configure()
                 ->withDocumentTransformers(function (OpenApi $openApi) {
@@ -31,5 +32,6 @@ class AppServiceProvider extends ServiceProvider
                     );
                 });
         }
+        // @codeCoverageIgnoreEnd
     }
 }
