@@ -61,6 +61,10 @@
             "@php artisan config:clear --ansi",
             "@php artisan test"
         ],
+        "test:coverage": [
+            "@php artisan config:clear --ansi",
+            "XDEBUG_MODE=coverage php artisan test --coverage"
+        ],
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=512M",
         "ecs": "vendor/bin/ecs",
         "ecs:check": "vendor/bin/ecs check",
