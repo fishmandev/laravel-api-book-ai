@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -17,9 +17,7 @@ class AuthController extends Controller
         $credentials = $request->validated();
 
         if (! $token = Auth::attempt($credentials)) {
-            return response()->json([
-                'message' => 'Invalid credentials',
-            ], Response::HTTP_UNAUTHORIZED);
+            throw new AuthenticationException('Invalid credentials');
         }
 
         return response()->json([

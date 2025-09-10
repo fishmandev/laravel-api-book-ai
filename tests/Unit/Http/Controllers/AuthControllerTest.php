@@ -75,10 +75,10 @@ class AuthControllerTest extends TestCase
     }
 
     /**
-     * Test failed login returns unauthorized response
+     * Test failed login throws authentication exception
      */
     #[DataProvider('failedAuthenticationProvider')]
-    public function testFailedLoginReturnsUnauthorizedResponse($authResult): void
+    public function testFailedLoginThrowsAuthenticationException($authResult): void
     {
         // Mock the LoginRequest
         $request = Mockery::mock(LoginRequest::class);
@@ -98,18 +98,44 @@ class AuthControllerTest extends TestCase
             ])
             ->andReturn($authResult);
 
-        $response = $this->controller->login($request);
-        $responseData = $response->getData(true);
+        // Expect AuthenticationException to be thrown
+        $this->expectException(\Illuminate\Auth\AuthenticationException::class);
+        $this->expectExceptionMessage('Invalid credentials');
 
-        // Assert response type
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        // This should throw the exception
+        $this->controller->login($request);
+    }
 
-        // Assert status code
-        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
+    /**
+     * Test that exception message matches expected value
+     */
+    public function testExceptionMessageIsCorrect(): void
+    {
+        // Mock the LoginRequest
+        $request = Mockery::mock(LoginRequest::class);
+        $request->shouldReceive('validated')
+            ->once()
+            ->andReturn([
+                'email' => 'invalid@test.com',
+                'password' => 'invalid',
+            ]);
 
-        // Assert error message
-        $this->assertArrayHasKey('message', $responseData);
-        $this->assertEquals('Invalid credentials', $responseData['message']);
+        // Mock failed authentication
+        Auth::shouldReceive('attempt')
+            ->once()
+            ->with([
+                'email' => 'invalid@test.com',
+                'password' => 'invalid',
+            ])
+            ->andReturn(false);
+
+        try {
+            $this->controller->login($request);
+            $this->fail('Expected AuthenticationException was not thrown');
+        } catch (\Illuminate\Auth\AuthenticationException $e) {
+            // Assert the exact exception message
+            $this->assertEquals('Invalid credentials', $e->getMessage());
+        }
     }
 
     /**
