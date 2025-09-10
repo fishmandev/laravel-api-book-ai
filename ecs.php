@@ -2,31 +2,29 @@
 
 declare(strict_types=1);
 
-use PhpCsFixer\Fixer\Import\NoUnusedImportsFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
+use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
 return ECSConfig::configure()
     ->withPaths([
         __DIR__ . '/app',
-        __DIR__ . '/bootstrap',
         __DIR__ . '/config',
-        __DIR__ . '/public',
+        __DIR__ . '/database',
         __DIR__ . '/routes',
         __DIR__ . '/tests',
     ])
-
-    // add a single rule
-    ->withRules([
-        NoUnusedImportsFixer::class,
+    ->withSkip([
+        // Skip generated files
+        __DIR__ . '/bootstrap',
+        __DIR__ . '/storage',
+        __DIR__ . '/vendor',
+        __DIR__ . '/public',
+        // Skip specific files that might have different formatting requirements
+        __DIR__ . '/database/migrations/*',
     ])
-
-    // add sets - group of rules, from easiest to more complex ones
-    // uncomment one, apply one, commit, PR, merge and repeat
-    //->withPreparedSets(
-    //      spaces: true,
-    //      namespaces: true,
-    //      docblocks: true,
-    //      arrays: true,
-    //      comments: true,
-    //)
-    ;
+    ->withSets([
+        SetList::PSR_12,
+        SetList::CLEAN_CODE,
+        SetList::COMMON,
+    ])
+    ->withRootFiles();
