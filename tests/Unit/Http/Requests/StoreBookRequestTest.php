@@ -16,27 +16,19 @@ class StoreBookRequestTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
-        $this->request = new StoreBookRequest();
-    }
 
-    /**
-     * Helper method to validate data against request rules
-     */
-    private function validate(array $data): \Illuminate\Validation\Validator
-    {
-        return Validator::make($data, $this->request->rules());
+        $this->request = new StoreBookRequest();
     }
 
     /**
      * Test valid data passes validation
      */
-    public function test_valid_data_passes_validation(): void
+    public function testValidDataPassesValidation(): void
     {
         // Arrange
         $data = [
             'title' => 'Valid Book Title',
-            'description' => 'This is a valid book description.'
+            'description' => 'This is a valid book description.',
         ];
 
         // Act
@@ -50,11 +42,11 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test title is required
      */
-    public function test_title_is_required(): void
+    public function testTitleIsRequired(): void
     {
         // Arrange
         $data = [
-            'description' => 'Book description without title'
+            'description' => 'Book description without title',
         ];
 
         // Act
@@ -69,11 +61,11 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test description is required
      */
-    public function test_description_is_required(): void
+    public function testDescriptionIsRequired(): void
     {
         // Arrange
         $data = [
-            'title' => 'Book title without description'
+            'title' => 'Book title without description',
         ];
 
         // Act
@@ -88,7 +80,7 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test both title and description are required
      */
-    public function test_both_title_and_description_are_required(): void
+    public function testBothTitleAndDescriptionAreRequired(): void
     {
         // Arrange
         $data = [];
@@ -106,12 +98,12 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test title must be a string
      */
-    public function test_title_must_be_string(): void
+    public function testTitleMustBeString(): void
     {
         // Arrange
         $data = [
             'title' => 12345,
-            'description' => 'Valid description'
+            'description' => 'Valid description',
         ];
 
         // Act
@@ -126,12 +118,12 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test description must be a string
      */
-    public function test_description_must_be_string(): void
+    public function testDescriptionMustBeString(): void
     {
         // Arrange
         $data = [
             'title' => 'Valid title',
-            'description' => ['array', 'not', 'string']
+            'description' => ['array', 'not', 'string'],
         ];
 
         // Act
@@ -146,12 +138,12 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test title cannot exceed 255 characters
      */
-    public function test_title_cannot_exceed_255_characters(): void
+    public function testTitleCannotExceed255Characters(): void
     {
         // Arrange
         $data = [
             'title' => str_repeat('a', 256),
-            'description' => 'Valid description'
+            'description' => 'Valid description',
         ];
 
         // Act
@@ -166,12 +158,12 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test title with exactly 255 characters is valid
      */
-    public function test_title_with_exactly_255_characters_is_valid(): void
+    public function testTitleWithExactly255CharactersIsValid(): void
     {
         // Arrange
         $data = [
             'title' => str_repeat('a', 255),
-            'description' => 'Valid description'
+            'description' => 'Valid description',
         ];
 
         // Act
@@ -184,12 +176,12 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test empty string values are invalid
      */
-    public function test_empty_string_values_are_invalid(): void
+    public function testEmptyStringValuesAreInvalid(): void
     {
         // Arrange
         $data = [
             'title' => '',
-            'description' => ''
+            'description' => '',
         ];
 
         // Act
@@ -204,12 +196,12 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test null values are invalid
      */
-    public function test_null_values_are_invalid(): void
+    public function testNullValuesAreInvalid(): void
     {
         // Arrange
         $data = [
             'title' => null,
-            'description' => null
+            'description' => null,
         ];
 
         // Act
@@ -224,12 +216,12 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test whitespace-only title is invalid
      */
-    public function test_whitespace_only_title_is_invalid(): void
+    public function testWhitespaceOnlyTitleIsInvalid(): void
     {
         // Arrange
         $data = [
             'title' => '   ',
-            'description' => 'Valid description'
+            'description' => 'Valid description',
         ];
 
         // Act
@@ -243,12 +235,12 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test very long description is valid (no max limit)
      */
-    public function test_very_long_description_is_valid(): void
+    public function testVeryLongDescriptionIsValid(): void
     {
         // Arrange
         $data = [
             'title' => 'Valid title',
-            'description' => str_repeat('Lorem ipsum dolor sit amet. ', 1000)
+            'description' => str_repeat('Lorem ipsum dolor sit amet. ', 1000),
         ];
 
         // Act
@@ -261,7 +253,7 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test rules method returns expected array structure
      */
-    public function test_rules_method_returns_expected_structure(): void
+    public function testRulesMethodReturnsExpectedStructure(): void
     {
         // Act
         $rules = $this->request->rules();
@@ -277,14 +269,14 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test additional fields are ignored
      */
-    public function test_additional_fields_are_ignored(): void
+    public function testAdditionalFieldsAreIgnored(): void
     {
         // Arrange
         $data = [
             'title' => 'Valid title',
             'description' => 'Valid description',
             'extra_field' => 'This should be ignored',
-            'another_field' => 123
+            'another_field' => 123,
         ];
 
         // Act
@@ -301,12 +293,12 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test special characters in title and description are valid
      */
-    public function test_special_characters_are_valid(): void
+    public function testSpecialCharactersAreValid(): void
     {
         // Arrange
         $data = [
             'title' => 'Book Title with Special Characters: !@#$%^&*()_+-=[]{}|;\':",.<>?/`~',
-            'description' => 'Description with special chars: éàüöß 中文 العربية emoji 😀'
+            'description' => 'Description with special chars: éàüöß 中文 العربية emoji 😀',
         ];
 
         // Act
@@ -319,12 +311,12 @@ class StoreBookRequestTest extends TestCase
     /**
      * Test numeric string values are valid
      */
-    public function test_numeric_string_values_are_valid(): void
+    public function testNumericStringValuesAreValid(): void
     {
         // Arrange
         $data = [
             'title' => '12345',
-            'description' => '67890'
+            'description' => '67890',
         ];
 
         // Act
@@ -332,5 +324,13 @@ class StoreBookRequestTest extends TestCase
 
         // Assert
         $this->assertTrue($validator->passes());
+    }
+
+    /**
+     * Helper method to validate data against request rules
+     */
+    private function validate(array $data): \Illuminate\Validation\Validator
+    {
+        return Validator::make($data, $this->request->rules());
     }
 }

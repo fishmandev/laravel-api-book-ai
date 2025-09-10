@@ -15,12 +15,12 @@ class BookResourceTest extends TestCase
     /**
      * Test BookResource transforms model correctly
      */
-    public function test_book_resource_transforms_model_correctly(): void
+    public function testBookResourceTransformsModelCorrectly(): void
     {
         // Arrange
         $book = Book::factory()->create([
             'title' => 'Test Book Title',
-            'description' => 'Test Book Description'
+            'description' => 'Test Book Description',
         ]);
         $request = Request::create('/api/v1/books/' . $book->id, 'GET');
 
@@ -35,7 +35,7 @@ class BookResourceTest extends TestCase
         $this->assertArrayHasKey('description', $response);
         $this->assertArrayHasKey('created_at', $response);
         $this->assertArrayHasKey('updated_at', $response);
-        
+
         $this->assertEquals($book->id, $response['id']);
         $this->assertEquals('Test Book Title', $response['title']);
         $this->assertEquals('Test Book Description', $response['description']);
@@ -46,7 +46,7 @@ class BookResourceTest extends TestCase
     /**
      * Test BookResource only includes specified fields
      */
-    public function test_book_resource_only_includes_specified_fields(): void
+    public function testBookResourceOnlyIncludesSpecifiedFields(): void
     {
         // Arrange
         $book = Book::factory()->create();
@@ -59,7 +59,7 @@ class BookResourceTest extends TestCase
         // Assert
         $expectedKeys = ['id', 'title', 'description', 'created_at', 'updated_at'];
         $actualKeys = array_keys($response);
-        
+
         $this->assertEquals($expectedKeys, $actualKeys);
         $this->assertCount(5, $response);
     }
@@ -67,12 +67,12 @@ class BookResourceTest extends TestCase
     /**
      * Test BookResource handles empty description correctly
      */
-    public function test_book_resource_handles_empty_description(): void
+    public function testBookResourceHandlesEmptyDescription(): void
     {
         // Arrange
         $book = Book::factory()->create([
             'title' => 'Book with empty description',
-            'description' => ''
+            'description' => '',
         ]);
         $request = Request::create('/api/v1/books/' . $book->id, 'GET');
 
@@ -88,7 +88,7 @@ class BookResourceTest extends TestCase
     /**
      * Test BookResource collection transformation
      */
-    public function test_book_resource_collection_transforms_multiple_books(): void
+    public function testBookResourceCollectionTransformsMultipleBooks(): void
     {
         // Arrange
         $books = Book::factory()->count(3)->create();
@@ -101,14 +101,14 @@ class BookResourceTest extends TestCase
         // Assert
         $this->assertIsArray($response);
         $this->assertCount(3, $response);
-        
+
         foreach ($response as $index => $bookData) {
             $this->assertArrayHasKey('id', $bookData);
             $this->assertArrayHasKey('title', $bookData);
             $this->assertArrayHasKey('description', $bookData);
             $this->assertArrayHasKey('created_at', $bookData);
             $this->assertArrayHasKey('updated_at', $bookData);
-            
+
             $this->assertEquals($books[$index]->id, $bookData['id']);
             $this->assertEquals($books[$index]->title, $bookData['title']);
             $this->assertEquals($books[$index]->description, $bookData['description']);
@@ -118,7 +118,7 @@ class BookResourceTest extends TestCase
     /**
      * Test BookResource with additional meta data
      */
-    public function test_book_resource_can_include_additional_data(): void
+    public function testBookResourceCanIncludeAdditionalData(): void
     {
         // Arrange
         $book = Book::factory()->create();
@@ -126,15 +126,17 @@ class BookResourceTest extends TestCase
 
         // Act
         $resource = (new BookResource($book))
-            ->additional(['message' => 'Book retrieved successfully']);
-        
+            ->additional([
+                'message' => 'Book retrieved successfully',
+            ]);
+
         $response = $resource->response($request)->getData(true);
 
         // Assert
         $this->assertArrayHasKey('data', $response);
         $this->assertArrayHasKey('message', $response);
         $this->assertEquals('Book retrieved successfully', $response['message']);
-        
+
         $bookData = $response['data'];
         $this->assertEquals($book->id, $bookData['id']);
         $this->assertEquals($book->title, $bookData['title']);
@@ -143,7 +145,7 @@ class BookResourceTest extends TestCase
     /**
      * Test BookResource preserves Carbon date instances
      */
-    public function test_book_resource_preserves_carbon_date_instances(): void
+    public function testBookResourcePreservesCarbonDateInstances(): void
     {
         // Arrange
         $book = Book::factory()->create();
@@ -163,7 +165,7 @@ class BookResourceTest extends TestCase
     /**
      * Test BookResource handles empty collection
      */
-    public function test_book_resource_handles_empty_collection(): void
+    public function testBookResourceHandlesEmptyCollection(): void
     {
         // Arrange
         $books = Book::whereRaw('1 = 0')->get(); // Empty collection

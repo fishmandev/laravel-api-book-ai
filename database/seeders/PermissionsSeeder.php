@@ -14,15 +14,15 @@ class PermissionsSeeder extends Seeder
     {
         $permissions = [
             'books.create',
-            'books.edit', 
+            'books.edit',
             'books.delete',
             'books.list',
-            'books.view'
+            'books.view',
         ];
 
         foreach ($permissions as $permission) {
             Permission::create([
-                'name' => $permission
+                'name' => $permission,
             ]);
         }
     }

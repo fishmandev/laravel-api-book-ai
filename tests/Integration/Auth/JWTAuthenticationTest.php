@@ -33,13 +33,13 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT token generation for user
      */
-    public function test_jwt_token_can_be_generated_for_user(): void
+    public function testJwtTokenCanBeGeneratedForUser(): void
     {
         $token = JWTAuth::fromUser($this->testUser);
 
         $this->assertNotEmpty($token);
         $this->assertIsString($token);
-        
+
         // Verify token structure (should have 3 parts separated by dots)
         $parts = explode('.', $token);
         $this->assertCount(3, $parts);
@@ -48,7 +48,7 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT token contains correct user information
      */
-    public function test_jwt_token_contains_correct_user_information(): void
+    public function testJwtTokenContainsCorrectUserInformation(): void
     {
         $token = JWTAuth::fromUser($this->testUser);
         $payload = JWTAuth::setToken($token)->getPayload();
@@ -64,7 +64,7 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT token can authenticate user
      */
-    public function test_jwt_token_can_authenticate_user(): void
+    public function testJwtTokenCanAuthenticateUser(): void
     {
         $token = JWTAuth::fromUser($this->testUser);
         $authenticatedUser = JWTAuth::setToken($token)->authenticate();
@@ -77,7 +77,7 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test invalid JWT token throws exception
      */
-    public function test_invalid_jwt_token_throws_exception(): void
+    public function testInvalidJwtTokenThrowsException(): void
     {
         $invalidToken = 'invalid.jwt.token';
 
@@ -88,14 +88,14 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT token expiry time matches configuration
      */
-    public function test_jwt_token_expiry_time_matches_configuration(): void
+    public function testJwtTokenExpiryTimeMatchesConfiguration(): void
     {
         $token = JWTAuth::fromUser($this->testUser);
         $payload = JWTAuth::setToken($token)->getPayload();
 
         $issuedAt = $payload['iat'];
         $expiresAt = $payload['exp'];
-        
+
         $ttlInSeconds = config('jwt.ttl') * 60;
         $actualTtl = $expiresAt - $issuedAt;
 
@@ -106,13 +106,13 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT token refresh functionality
      */
-    public function test_jwt_token_can_be_refreshed(): void
+    public function testJwtTokenCanBeRefreshed(): void
     {
         $originalToken = JWTAuth::fromUser($this->testUser);
-        
+
         // Wait a moment to ensure different token
         sleep(1);
-        
+
         // Set the token before refreshing
         JWTAuth::setToken($originalToken);
         $newToken = JWTAuth::refresh();
@@ -128,10 +128,10 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT token invalidation
      */
-    public function test_jwt_token_can_be_invalidated(): void
+    public function testJwtTokenCanBeInvalidated(): void
     {
         $token = JWTAuth::fromUser($this->testUser);
-        
+
         // Invalidate the token
         JWTAuth::setToken($token)->invalidate();
 
@@ -147,11 +147,11 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test system user JWT functionality
      */
-    public function test_system_user_jwt_functionality(): void
+    public function testSystemUserJwtFunctionality(): void
     {
         // Truncate users table and create system user with ID=1
         DB::table('users')->truncate();
-        
+
         $systemUser = User::create([
             'id' => 1,
             'name' => 'System Administrator',
@@ -159,7 +159,7 @@ class JWTAuthenticationTest extends TestCase
             'password' => Hash::make('system123'),
             'email_verified_at' => now(),
         ]);
-        
+
         $this->assertNotNull($systemUser);
         $this->assertEquals('system@example.com', $systemUser->email);
 
@@ -176,13 +176,16 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT token with custom claims
      */
-    public function test_jwt_token_with_custom_claims(): void
+    public function testJwtTokenWithCustomClaims(): void
     {
-        $customClaims = ['role' => 'admin', 'permissions' => ['read', 'write']];
+        $customClaims = [
+            'role' => 'admin',
+            'permissions' => ['read', 'write'],
+        ];
         $token = JWTAuth::claims($customClaims)->fromUser($this->testUser);
-        
+
         $payload = JWTAuth::setToken($token)->getPayload();
-        
+
         $this->assertEquals('admin', $payload['role']);
         $this->assertEquals(['read', 'write'], $payload['permissions']);
     }
@@ -190,7 +193,7 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT authentication via HTTP header
      */
-    public function test_jwt_authentication_via_http_header(): void
+    public function testJwtAuthenticationViaHttpHeader(): void
     {
         // Login to get token
         $response = $this->postJson('/api/v1/login', [
@@ -203,7 +206,7 @@ class JWTAuthenticationTest extends TestCase
         // Create a protected route for testing (if it exists)
         // For now, we'll just verify the token format
         $this->assertNotEmpty($token);
-        
+
         // Verify token can be used in Authorization header format
         $authHeader = 'Bearer ' . $token;
         $this->assertStringStartsWith('Bearer ', $authHeader);
@@ -212,7 +215,7 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test concurrent JWT tokens for same user
      */
-    public function test_concurrent_jwt_tokens_for_same_user(): void
+    public function testConcurrentJwtTokensForSameUser(): void
     {
         $token1 = JWTAuth::fromUser($this->testUser);
         sleep(1); // Ensure different timestamp
@@ -231,7 +234,7 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT token parsing from different formats
      */
-    public function test_jwt_token_parsing_from_different_formats(): void
+    public function testJwtTokenParsingFromDifferentFormats(): void
     {
         $token = JWTAuth::fromUser($this->testUser);
 
@@ -249,7 +252,7 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT token TTL configuration
      */
-    public function test_jwt_token_ttl_configuration(): void
+    public function testJwtTokenTtlConfiguration(): void
     {
         $ttl = config('jwt.ttl');
         $this->assertIsNumeric($ttl);
@@ -258,10 +261,10 @@ class JWTAuthenticationTest extends TestCase
         // Verify TTL is used in token generation
         $token = JWTAuth::fromUser($this->testUser);
         $payload = JWTAuth::setToken($token)->getPayload();
-        
+
         $expectedExpiry = Carbon::now()->addMinutes($ttl)->timestamp;
         $actualExpiry = $payload['exp'];
-        
+
         // Allow 5 second tolerance for test execution time
         $this->assertEqualsWithDelta($expectedExpiry, $actualExpiry, 5);
     }
@@ -269,18 +272,18 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test database persistence after JWT authentication
      */
-    public function test_database_persistence_after_jwt_authentication(): void
+    public function testDatabasePersistenceAfterJwtAuthentication(): void
     {
         // Create initial user
         $initialCount = User::count();
-        
+
         // Generate and use JWT token
         $token = JWTAuth::fromUser($this->testUser);
         $authenticatedUser = JWTAuth::setToken($token)->authenticate();
-        
+
         // Verify no new users were created
         $this->assertEquals($initialCount, User::count());
-        
+
         // Verify authenticated user exists in database
         $dbUser = User::find($authenticatedUser->id);
         $this->assertNotNull($dbUser);
@@ -290,7 +293,7 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT token with malformed structure
      */
-    public function test_jwt_token_with_malformed_structure(): void
+    public function testJwtTokenWithMalformedStructure(): void
     {
         $malformedTokens = [
             'not.a.token',
@@ -314,11 +317,11 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test JWT authentication with different user models
      */
-    public function test_jwt_authentication_with_different_users(): void
+    public function testJwtAuthenticationWithDifferentUsers(): void
     {
         // Create multiple users
         $users = User::factory()->count(3)->create();
-        
+
         $tokens = [];
         foreach ($users as $user) {
             $tokens[$user->id] = JWTAuth::fromUser($user);
@@ -334,7 +337,7 @@ class JWTAuthenticationTest extends TestCase
     /**
      * Test full authentication flow integration
      */
-    public function test_full_authentication_flow_integration(): void
+    public function testFullAuthenticationFlowIntegration(): void
     {
         // 1. Login via API
         $response = $this->postJson('/api/v1/login', [

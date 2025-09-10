@@ -13,9 +13,9 @@ class Book extends Model
 {
     /** @use HasFactory<BookFactory> */
     use HasFactory;
-    
+
     protected $fillable = [
         'title',
-        'description'
+        'description',
     ];
 }

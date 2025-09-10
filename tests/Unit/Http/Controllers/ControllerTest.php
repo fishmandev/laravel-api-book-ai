@@ -28,28 +28,35 @@ class ControllerTest extends TestCase
     use RefreshDatabase;
 
     private TestController $controller;
+
     private User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->controller = new TestController();
         // Ensure user ID is not 1 (system admin bypasses all permissions)
-        $this->user = User::factory()->create(['id' => 2]);
+        $this->user = User::factory()->create([
+            'id' => 2,
+        ]);
     }
 
     /**
      * Test authorize method allows access when Gate returns true
      */
-    public function test_authorize_allows_access_when_gate_returns_true(): void
+    public function testAuthorizeAllowsAccessWhenGateReturnsTrue(): void
     {
         // Arrange
-        $permission = Permission::create(['name' => 'test.permission']);
-        $role = Role::create(['name' => 'test-role']);
+        $permission = Permission::create([
+            'name' => 'test.permission',
+        ]);
+        $role = Role::create([
+            'name' => 'test-role',
+        ]);
         $role->permissions()->attach($permission);
         $this->user->roles()->attach($role);
-        
+
         PermissionService::defineGates();
         $this->actingAs($this->user);
 
@@ -61,24 +68,26 @@ class ControllerTest extends TestCase
     /**
      * Test authorize method throws AuthorizationException when Gate returns false
      */
-    public function test_authorize_throws_exception_when_gate_returns_false(): void
+    public function testAuthorizeThrowsExceptionWhenGateReturnsFalse(): void
     {
         // Arrange
-        Permission::create(['name' => 'test.permission']);
+        Permission::create([
+            'name' => 'test.permission',
+        ]);
         PermissionService::defineGates();
         $this->actingAs($this->user);
 
         // Act & Assert
         $this->expectException(AuthorizationException::class);
         $this->expectExceptionMessage('This action is unauthorized.');
-        
+
         $this->controller->testAuthorize('test.permission');
     }
 
     /**
      * Test authorize method with non-existent permission
      */
-    public function test_authorize_throws_exception_for_non_existent_permission(): void
+    public function testAuthorizeThrowsExceptionForNonExistentPermission(): void
     {
         // Arrange
         $this->actingAs($this->user);
@@ -86,38 +95,46 @@ class ControllerTest extends TestCase
         // Act & Assert
         $this->expectException(AuthorizationException::class);
         $this->expectExceptionMessage('This action is unauthorized.');
-        
+
         $this->controller->testAuthorize('non.existent.permission');
     }
 
     /**
      * Test authorize method without authenticated user
      */
-    public function test_authorize_throws_exception_without_authenticated_user(): void
+    public function testAuthorizeThrowsExceptionWithoutAuthenticatedUser(): void
     {
         // Arrange
-        Permission::create(['name' => 'test.permission']);
+        Permission::create([
+            'name' => 'test.permission',
+        ]);
         PermissionService::defineGates();
 
         // Act & Assert
         $this->expectException(AuthorizationException::class);
         $this->expectExceptionMessage('This action is unauthorized.');
-        
+
         $this->controller->testAuthorize('test.permission');
     }
 
     /**
      * Test authorize method with multiple sequential checks
      */
-    public function test_authorize_works_correctly_with_multiple_sequential_checks(): void
+    public function testAuthorizeWorksCorrectlyWithMultipleSequentialChecks(): void
     {
         // Arrange
-        $permission1 = Permission::create(['name' => 'permission.one']);
-        $permission2 = Permission::create(['name' => 'permission.two']);
-        $role = Role::create(['name' => 'multi-permission-role']);
+        $permission1 = Permission::create([
+            'name' => 'permission.one',
+        ]);
+        $permission2 = Permission::create([
+            'name' => 'permission.two',
+        ]);
+        $role = Role::create([
+            'name' => 'multi-permission-role',
+        ]);
         $role->permissions()->attach([$permission1->id, $permission2->id]);
         $this->user->roles()->attach($role);
-        
+
         PermissionService::defineGates();
         $this->actingAs($this->user);
 
@@ -130,11 +147,11 @@ class ControllerTest extends TestCase
     /**
      * Test authorize method uses Gate facade correctly
      */
-    public function test_authorize_uses_gate_facade_correctly(): void
+    public function testAuthorizeUsesGateFacadeCorrectly(): void
     {
         // Arrange
         $this->actingAs($this->user);
-        
+
         // Mock Gate facade
         Gate::shouldReceive('allows')
             ->once()
@@ -151,21 +168,21 @@ class ControllerTest extends TestCase
     /**
      * Test authorize method with empty permission string throws exception
      */
-    public function test_authorize_with_empty_permission_throws_exception(): void
+    public function testAuthorizeWithEmptyPermissionThrowsException(): void
     {
         // Arrange
         $this->actingAs($this->user);
 
         // Act & Assert
         $this->expectException(AuthorizationException::class);
-        
+
         $this->controller->testAuthorize('');
     }
 
     /**
      * Test authorize method preserves exception message
      */
-    public function test_authorize_preserves_exception_message(): void
+    public function testAuthorizePreservesExceptionMessage(): void
     {
         // Arrange
         $this->actingAs($this->user);
@@ -183,20 +200,26 @@ class ControllerTest extends TestCase
     /**
      * Test authorize method with user having permission through multiple roles
      */
-    public function test_authorize_allows_access_with_permission_from_any_role(): void
+    public function testAuthorizeAllowsAccessWithPermissionFromAnyRole(): void
     {
         // Arrange
-        $permission = Permission::create(['name' => 'shared.permission']);
-        
-        $role1 = Role::create(['name' => 'role-one']);
-        $role2 = Role::create(['name' => 'role-two']);
-        
+        $permission = Permission::create([
+            'name' => 'shared.permission',
+        ]);
+
+        $role1 = Role::create([
+            'name' => 'role-one',
+        ]);
+        $role2 = Role::create([
+            'name' => 'role-two',
+        ]);
+
         // Only role2 has the permission
         $role2->permissions()->attach($permission);
-        
+
         // User has both roles
         $this->user->roles()->attach([$role1->id, $role2->id]);
-        
+
         PermissionService::defineGates();
         $this->actingAs($this->user);
 
@@ -208,20 +231,24 @@ class ControllerTest extends TestCase
     /**
      * Test authorize method is case-sensitive for permissions
      */
-    public function test_authorize_is_case_sensitive_for_permissions(): void
+    public function testAuthorizeIsCaseSensitiveForPermissions(): void
     {
         // Arrange
-        $permission = Permission::create(['name' => 'case.sensitive']);
-        $role = Role::create(['name' => 'test-role']);
+        $permission = Permission::create([
+            'name' => 'case.sensitive',
+        ]);
+        $role = Role::create([
+            'name' => 'test-role',
+        ]);
         $role->permissions()->attach($permission);
         $this->user->roles()->attach($role);
-        
+
         PermissionService::defineGates();
         $this->actingAs($this->user);
 
         // Act & Assert - Correct case should work
         $this->controller->testAuthorize('case.sensitive');
-        
+
         // Wrong case should throw exception
         $this->expectException(AuthorizationException::class);
         $this->controller->testAuthorize('CASE.SENSITIVE');

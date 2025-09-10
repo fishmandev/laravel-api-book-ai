@@ -29,7 +29,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test successful login with valid credentials
      */
-    public function test_user_can_login_with_valid_credentials(): void
+    public function testUserCanLoginWithValidCredentials(): void
     {
         $response = $this->postJson('/api/v1/login', [
             'email' => 'test@example.com',
@@ -49,7 +49,7 @@ class AuthControllerTest extends TestCase
         // Verify the token is valid
         $token = $response->json('access_token');
         $this->assertNotEmpty($token);
-        
+
         // Verify token can be used to authenticate
         $payload = JWTAuth::setToken($token)->getPayload();
         $this->assertEquals($this->testUser->id, $payload['sub']);
@@ -58,7 +58,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test login fails with invalid email
      */
-    public function test_login_fails_with_invalid_email(): void
+    public function testLoginFailsWithInvalidEmail(): void
     {
         $response = $this->postJson('/api/v1/login', [
             'email' => 'wrong@example.com',
@@ -74,7 +74,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test login fails with invalid password
      */
-    public function test_login_fails_with_invalid_password(): void
+    public function testLoginFailsWithInvalidPassword(): void
     {
         $response = $this->postJson('/api/v1/login', [
             'email' => 'test@example.com',
@@ -90,7 +90,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test login fails when email is missing
      */
-    public function test_login_fails_when_email_is_missing(): void
+    public function testLoginFailsWhenEmailIsMissing(): void
     {
         $response = $this->postJson('/api/v1/login', [
             'password' => 'password123',
@@ -106,7 +106,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test login fails when password is missing
      */
-    public function test_login_fails_when_password_is_missing(): void
+    public function testLoginFailsWhenPasswordIsMissing(): void
     {
         $response = $this->postJson('/api/v1/login', [
             'email' => 'test@example.com',
@@ -122,7 +122,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test login fails when both email and password are missing
      */
-    public function test_login_fails_when_credentials_are_missing(): void
+    public function testLoginFailsWhenCredentialsAreMissing(): void
     {
         $response = $this->postJson('/api/v1/login', []);
 
@@ -133,7 +133,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test login fails with invalid email format
      */
-    public function test_login_fails_with_invalid_email_format(): void
+    public function testLoginFailsWithInvalidEmailFormat(): void
     {
         $response = $this->postJson('/api/v1/login', [
             'email' => 'not-an-email',
@@ -150,11 +150,11 @@ class AuthControllerTest extends TestCase
     /**
      * Test system user can login successfully
      */
-    public function test_system_user_can_login(): void
+    public function testSystemUserCanLogin(): void
     {
         // Truncate users table and create system user with ID=1
         \DB::table('users')->truncate();
-        
+
         $systemUser = User::create([
             'id' => 1,
             'name' => 'System Administrator',
@@ -179,7 +179,7 @@ class AuthControllerTest extends TestCase
         $token = $response->json('access_token');
         $payload = JWTAuth::setToken($token)->getPayload();
         $this->assertEquals(1, $payload['sub']);
-        
+
         // Verify system user has special permissions
         $this->assertTrue($systemUser->hasPermission('any.permission'));
     }
@@ -187,7 +187,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test token expires_in value matches JWT TTL configuration
      */
-    public function test_token_expiry_matches_jwt_ttl_configuration(): void
+    public function testTokenExpiryMatchesJwtTtlConfiguration(): void
     {
         $response = $this->postJson('/api/v1/login', [
             'email' => 'test@example.com',
@@ -195,17 +195,17 @@ class AuthControllerTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        
+
         $expiresIn = $response->json('expires_in');
         $expectedTtl = config('jwt.ttl') * 60; // Convert minutes to seconds
-        
+
         $this->assertEquals($expectedTtl, $expiresIn);
     }
 
     /**
      * Test login endpoint accepts only POST method
      */
-    public function test_login_endpoint_accepts_only_post_method(): void
+    public function testLoginEndpointAcceptsOnlyPostMethod(): void
     {
         // Test GET method
         $response = $this->getJson('/api/v1/login');
@@ -226,7 +226,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test multiple failed login attempts (basic rate limiting awareness)
      */
-    public function test_multiple_failed_login_attempts(): void
+    public function testMultipleFailedLoginAttempts(): void
     {
         // Attempt multiple failed logins
         for ($i = 0; $i < 5; $i++) {
@@ -250,7 +250,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test JWT token can be used to access protected routes
      */
-    public function test_jwt_token_can_be_used_for_authentication(): void
+    public function testJwtTokenCanBeUsedForAuthentication(): void
     {
         // Login to get token
         $response = $this->postJson('/api/v1/login', [
@@ -262,7 +262,7 @@ class AuthControllerTest extends TestCase
 
         // Use token to authenticate (this would be used with protected routes)
         $authenticatedUser = JWTAuth::setToken($token)->authenticate();
-        
+
         $this->assertInstanceOf(User::class, $authenticatedUser);
         $this->assertEquals($this->testUser->id, $authenticatedUser->id);
         $this->assertEquals($this->testUser->email, $authenticatedUser->email);
@@ -271,7 +271,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test login response contains valid JWT structure
      */
-    public function test_login_response_contains_valid_jwt_structure(): void
+    public function testLoginResponseContainsValidJwtStructure(): void
     {
         $response = $this->postJson('/api/v1/login', [
             'email' => 'test@example.com',
@@ -279,11 +279,11 @@ class AuthControllerTest extends TestCase
         ]);
 
         $token = $response->json('access_token');
-        
+
         // JWT should have three parts separated by dots
         $parts = explode('.', $token);
         $this->assertCount(3, $parts);
-        
+
         // Verify each part is base64 encoded
         foreach ($parts as $part) {
             $this->assertMatchesRegularExpression('/^[A-Za-z0-9_-]+$/', $part);
@@ -293,7 +293,7 @@ class AuthControllerTest extends TestCase
     /**
      * Test case sensitivity of email in login
      */
-    public function test_email_is_case_sensitive_for_login(): void
+    public function testEmailIsCaseSensitiveForLogin(): void
     {
         // Try with uppercase email (should fail with default Laravel behavior)
         $response = $this->postJson('/api/v1/login', [

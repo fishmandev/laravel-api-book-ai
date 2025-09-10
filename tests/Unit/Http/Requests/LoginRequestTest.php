@@ -19,7 +19,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test validation rules are properly defined
      */
-    public function test_validation_rules_are_properly_defined(): void
+    public function testValidationRulesAreProperlyDefined(): void
     {
         $rules = $this->request->rules();
 
@@ -33,7 +33,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test valid data passes validation
      */
-    public function test_valid_data_passes_validation(): void
+    public function testValidDataPassesValidation(): void
     {
         $data = [
             'email' => 'test@example.com',
@@ -49,7 +49,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test email is required
      */
-    public function test_email_is_required(): void
+    public function testEmailIsRequired(): void
     {
         $data = [
             'password' => 'password123',
@@ -65,7 +65,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test password is required
      */
-    public function test_password_is_required(): void
+    public function testPasswordIsRequired(): void
     {
         $data = [
             'email' => 'test@example.com',
@@ -81,7 +81,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test email must be valid email format
      */
-    public function test_email_must_be_valid_email_format(): void
+    public function testEmailMustBeValidEmailFormat(): void
     {
         $invalidEmails = [
             'not-an-email',
@@ -110,7 +110,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test various valid email formats pass validation
      */
-    public function test_various_valid_email_formats_pass_validation(): void
+    public function testVariousValidEmailFormatsPassValidation(): void
     {
         $validEmails = [
             'user@example.com',
@@ -136,7 +136,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test password must be string
      */
-    public function test_password_must_be_string(): void
+    public function testPasswordMustBeString(): void
     {
         $nonStringPasswords = [
             123456,
@@ -162,8 +162,8 @@ class LoginRequestTest extends TestCase
             } else {
                 // Other non-string values should fail string validation
                 // Note: In Laravel, numeric values are often coerced to strings
-                if (!is_numeric($nonStringPassword) && !is_bool($nonStringPassword)) {
-                    $this->assertFalse($validator->passes(), "Password of type " . gettype($nonStringPassword) . " should fail validation");
+                if (! is_numeric($nonStringPassword) && ! is_bool($nonStringPassword)) {
+                    $this->assertFalse($validator->passes(), 'Password of type ' . gettype($nonStringPassword) . ' should fail validation');
                 }
             }
         }
@@ -172,7 +172,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test empty string values fail validation
      */
-    public function test_empty_string_values_fail_validation(): void
+    public function testEmptyStringValuesFailValidation(): void
     {
         $data = [
             'email' => '',
@@ -189,7 +189,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test whitespace-only values fail validation
      */
-    public function test_whitespace_only_values_fail_validation(): void
+    public function testWhitespaceOnlyValuesFailValidation(): void
     {
         $data = [
             'email' => '   ',
@@ -205,7 +205,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test extra fields are allowed (mass assignment protection handles this)
      */
-    public function test_extra_fields_are_ignored_in_validation(): void
+    public function testExtraFieldsAreIgnoredInValidation(): void
     {
         $data = [
             'email' => 'test@example.com',
@@ -222,7 +222,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test LoginRequest extends FormRequest
      */
-    public function test_login_request_extends_form_request(): void
+    public function testLoginRequestExtendsFormRequest(): void
     {
         $this->assertInstanceOf(\Illuminate\Foundation\Http\FormRequest::class, $this->request);
     }
@@ -230,7 +230,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test rules method returns array
      */
-    public function test_rules_method_returns_array(): void
+    public function testRulesMethodReturnsArray(): void
     {
         $rules = $this->request->rules();
         $this->assertIsArray($rules);
@@ -239,10 +239,10 @@ class LoginRequestTest extends TestCase
     /**
      * Test long email addresses are accepted
      */
-    public function test_long_email_addresses_are_accepted(): void
+    public function testLongEmailAddressesAreAccepted(): void
     {
         $longEmail = str_repeat('a', 50) . '@' . str_repeat('b', 50) . '.com';
-        
+
         $data = [
             'email' => $longEmail,
             'password' => 'password123',
@@ -256,10 +256,10 @@ class LoginRequestTest extends TestCase
     /**
      * Test long passwords are accepted
      */
-    public function test_long_passwords_are_accepted(): void
+    public function testLongPasswordsAreAccepted(): void
     {
         $longPassword = str_repeat('a', 1000);
-        
+
         $data = [
             'email' => 'test@example.com',
             'password' => $longPassword,
@@ -273,7 +273,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test special characters in password are accepted
      */
-    public function test_special_characters_in_password_are_accepted(): void
+    public function testSpecialCharactersInPasswordAreAccepted(): void
     {
         $specialPasswords = [
             '!@#$%^&*()',
@@ -299,7 +299,7 @@ class LoginRequestTest extends TestCase
     /**
      * Test validation messages are in English
      */
-    public function test_validation_messages_are_in_english(): void
+    public function testValidationMessagesAreInEnglish(): void
     {
         $data = [];
 
@@ -307,7 +307,7 @@ class LoginRequestTest extends TestCase
         $validator->passes();
 
         $errors = $validator->errors();
-        
+
         $this->assertStringContainsString('required', $errors->first('email'));
         $this->assertStringContainsString('required', $errors->first('password'));
     }

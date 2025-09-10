@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | JWT Authentication Secret
@@ -36,7 +35,6 @@ return [
     */
 
     'keys' => [
-
         /*
         |--------------------------------------------------------------------------
         | Public Key
@@ -73,7 +71,6 @@ return [
         */
 
         'passphrase' => env('JWT_PASSPHRASE'),
-
     ],
 
     /*
@@ -291,5 +288,4 @@ return [
         'storage' => Tymon\JWTAuth\Providers\Storage\Illuminate::class,
 
     ],
-
 ];

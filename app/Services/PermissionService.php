@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Models\Permission;
+use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
-use App\Models\User;
 
 class PermissionService
 {
@@ -15,7 +15,7 @@ class PermissionService
     public static function defineGates(): void
     {
         // Skip gate definition if permissions table doesn't exist (testing environments)
-        if (!Schema::hasTable('permissions')) {
+        if (! Schema::hasTable('permissions')) {
             return;
         }
 

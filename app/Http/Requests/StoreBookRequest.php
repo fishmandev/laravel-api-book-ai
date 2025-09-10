@@ -15,7 +15,7 @@ class StoreBookRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'description' => 'required|string'
+            'description' => 'required|string',
         ];
     }
 }

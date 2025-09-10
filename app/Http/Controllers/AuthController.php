@@ -13,16 +13,16 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
 
-        if (!$token = Auth::attempt($credentials)) {
+        if (! $token = Auth::attempt($credentials)) {
             return response()->json([
-                'message' => 'Invalid credentials'
+                'message' => 'Invalid credentials',
             ], Response::HTTP_UNAUTHORIZED);
         }
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl') * 60
+            'expires_in' => config('jwt.ttl') * 60,
         ]);
     }
 }

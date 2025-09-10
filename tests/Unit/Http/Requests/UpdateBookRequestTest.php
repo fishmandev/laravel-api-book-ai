@@ -16,27 +16,19 @@ class UpdateBookRequestTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
-        $this->request = new UpdateBookRequest();
-    }
 
-    /**
-     * Helper method to validate data against request rules
-     */
-    private function validate(array $data): \Illuminate\Validation\Validator
-    {
-        return Validator::make($data, $this->request->rules());
+        $this->request = new UpdateBookRequest();
     }
 
     /**
      * Test valid data with both fields passes validation
      */
-    public function test_valid_data_with_both_fields_passes_validation(): void
+    public function testValidDataWithBothFieldsPassesValidation(): void
     {
         // Arrange
         $data = [
             'title' => 'Updated Book Title',
-            'description' => 'This is an updated book description.'
+            'description' => 'This is an updated book description.',
         ];
 
         // Act
@@ -50,11 +42,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test updating only title is valid
      */
-    public function test_updating_only_title_is_valid(): void
+    public function testUpdatingOnlyTitleIsValid(): void
     {
         // Arrange
         $data = [
-            'title' => 'Updated Title Only'
+            'title' => 'Updated Title Only',
         ];
 
         // Act
@@ -68,11 +60,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test updating only description is valid
      */
-    public function test_updating_only_description_is_valid(): void
+    public function testUpdatingOnlyDescriptionIsValid(): void
     {
         // Arrange
         $data = [
-            'description' => 'Updated description only'
+            'description' => 'Updated description only',
         ];
 
         // Act
@@ -86,7 +78,7 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test empty request is valid (no fields required)
      */
-    public function test_empty_request_is_valid(): void
+    public function testEmptyRequestIsValid(): void
     {
         // Arrange
         $data = [];
@@ -102,11 +94,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test title must be a string when provided
      */
-    public function test_title_must_be_string_when_provided(): void
+    public function testTitleMustBeStringWhenProvided(): void
     {
         // Arrange
         $data = [
-            'title' => 12345
+            'title' => 12345,
         ];
 
         // Act
@@ -121,11 +113,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test description must be a string when provided
      */
-    public function test_description_must_be_string_when_provided(): void
+    public function testDescriptionMustBeStringWhenProvided(): void
     {
         // Arrange
         $data = [
-            'description' => ['array', 'not', 'string']
+            'description' => ['array', 'not', 'string'],
         ];
 
         // Act
@@ -140,11 +132,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test title cannot exceed 255 characters
      */
-    public function test_title_cannot_exceed_255_characters(): void
+    public function testTitleCannotExceed255Characters(): void
     {
         // Arrange
         $data = [
-            'title' => str_repeat('a', 256)
+            'title' => str_repeat('a', 256),
         ];
 
         // Act
@@ -159,11 +151,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test title with exactly 255 characters is valid
      */
-    public function test_title_with_exactly_255_characters_is_valid(): void
+    public function testTitleWithExactly255CharactersIsValid(): void
     {
         // Arrange
         $data = [
-            'title' => str_repeat('a', 255)
+            'title' => str_repeat('a', 255),
         ];
 
         // Act
@@ -176,11 +168,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test empty string for title is invalid (required when present)
      */
-    public function test_empty_string_title_is_invalid(): void
+    public function testEmptyStringTitleIsInvalid(): void
     {
         // Arrange
         $data = [
-            'title' => ''
+            'title' => '',
         ];
 
         // Act
@@ -194,11 +186,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test empty string for description is invalid (required when present)
      */
-    public function test_empty_string_description_is_invalid(): void
+    public function testEmptyStringDescriptionIsInvalid(): void
     {
         // Arrange
         $data = [
-            'description' => ''
+            'description' => '',
         ];
 
         // Act
@@ -212,12 +204,12 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test null value for title is invalid when field is present
      */
-    public function test_null_title_is_invalid_when_present(): void
+    public function testNullTitleIsInvalidWhenPresent(): void
     {
         // Arrange
         $data = [
             'title' => null,
-            'description' => 'Valid description'
+            'description' => 'Valid description',
         ];
 
         // Act
@@ -231,12 +223,12 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test null value for description is invalid when field is present
      */
-    public function test_null_description_is_invalid_when_present(): void
+    public function testNullDescriptionIsInvalidWhenPresent(): void
     {
         // Arrange
         $data = [
             'title' => 'Valid title',
-            'description' => null
+            'description' => null,
         ];
 
         // Act
@@ -250,11 +242,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test whitespace-only title is invalid
      */
-    public function test_whitespace_only_title_is_invalid(): void
+    public function testWhitespaceOnlyTitleIsInvalid(): void
     {
         // Arrange
         $data = [
-            'title' => '   '
+            'title' => '   ',
         ];
 
         // Act
@@ -268,11 +260,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test whitespace-only description is invalid
      */
-    public function test_whitespace_only_description_is_invalid(): void
+    public function testWhitespaceOnlyDescriptionIsInvalid(): void
     {
         // Arrange
         $data = [
-            'description' => '   '
+            'description' => '   ',
         ];
 
         // Act
@@ -286,11 +278,11 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test very long description is valid (no max limit)
      */
-    public function test_very_long_description_is_valid(): void
+    public function testVeryLongDescriptionIsValid(): void
     {
         // Arrange
         $data = [
-            'description' => str_repeat('Lorem ipsum dolor sit amet. ', 1000)
+            'description' => str_repeat('Lorem ipsum dolor sit amet. ', 1000),
         ];
 
         // Act
@@ -303,7 +295,7 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test rules method returns expected array structure
      */
-    public function test_rules_method_returns_expected_structure(): void
+    public function testRulesMethodReturnsExpectedStructure(): void
     {
         // Act
         $rules = $this->request->rules();
@@ -319,13 +311,13 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test additional fields are ignored
      */
-    public function test_additional_fields_are_ignored(): void
+    public function testAdditionalFieldsAreIgnored(): void
     {
         // Arrange
         $data = [
             'title' => 'Valid title',
             'extra_field' => 'This should be ignored',
-            'another_field' => 123
+            'another_field' => 123,
         ];
 
         // Act
@@ -343,12 +335,12 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test special characters in title and description are valid
      */
-    public function test_special_characters_are_valid(): void
+    public function testSpecialCharactersAreValid(): void
     {
         // Arrange
         $data = [
             'title' => 'Updated Title: !@#$%^&*()_+-=[]{}|;\':",.<>?/`~',
-            'description' => 'Updated description: éàüöß 中文 العربية emoji 😀'
+            'description' => 'Updated description: éàüöß 中文 العربية emoji 😀',
         ];
 
         // Act
@@ -361,12 +353,12 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test numeric string values are valid
      */
-    public function test_numeric_string_values_are_valid(): void
+    public function testNumericStringValuesAreValid(): void
     {
         // Arrange
         $data = [
             'title' => '12345',
-            'description' => '67890'
+            'description' => '67890',
         ];
 
         // Act
@@ -379,7 +371,7 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test sometimes rule allows field to be completely absent
      */
-    public function test_sometimes_rule_allows_fields_to_be_absent(): void
+    public function testSometimesRuleAllowsFieldsToBeAbsent(): void
     {
         // Arrange - No data at all
         $data = [];
@@ -395,10 +387,12 @@ class UpdateBookRequestTest extends TestCase
     /**
      * Test difference between sometimes and required validation
      */
-    public function test_difference_between_sometimes_and_required(): void
+    public function testDifferenceBetweenSometimesAndRequired(): void
     {
         // Test 1: Field present but empty - should fail
-        $data1 = ['title' => ''];
+        $data1 = [
+            'title' => '',
+        ];
         $validator1 = $this->validate($data1);
         $this->assertFalse($validator1->passes());
 
@@ -408,8 +402,18 @@ class UpdateBookRequestTest extends TestCase
         $this->assertTrue($validator2->passes());
 
         // Test 3: Field present with value - should pass
-        $data3 = ['title' => 'Valid Title'];
+        $data3 = [
+            'title' => 'Valid Title',
+        ];
         $validator3 = $this->validate($data3);
         $this->assertTrue($validator3->passes());
+    }
+
+    /**
+     * Helper method to validate data against request rules
+     */
+    private function validate(array $data): \Illuminate\Validation\Validator
+    {
+        return Validator::make($data, $this->request->rules());
     }
 }

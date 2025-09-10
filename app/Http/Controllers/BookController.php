@@ -40,7 +40,9 @@ class BookController extends Controller
         $book = Book::create($request->validated());
 
         return (new BookResource($book))
-            ->additional(['message' => 'Book created successfully'])
+            ->additional([
+                'message' => 'Book created successfully',
+            ])
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
@@ -70,7 +72,9 @@ class BookController extends Controller
         $book->update($request->validated());
 
         return (new BookResource($book->fresh()))
-            ->additional(['message' => 'Book updated successfully']);
+            ->additional([
+                'message' => 'Book updated successfully',
+            ]);
     }
 
     /**
@@ -86,7 +90,7 @@ class BookController extends Controller
         $book->delete();
 
         return response()->json([
-            'message' => 'Book deleted successfully'
+            'message' => 'Book deleted successfully',
         ]);
     }
 }
