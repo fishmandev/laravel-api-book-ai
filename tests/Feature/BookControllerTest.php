@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Services\PermissionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\Response;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 

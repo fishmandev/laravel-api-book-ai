@@ -6,10 +6,10 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -150,7 +150,7 @@ class JWTAuthenticationTest extends TestCase
     public function test_system_user_jwt_functionality(): void
     {
         // Truncate users table and create system user with ID=1
-        \DB::table('users')->truncate();
+        DB::table('users')->truncate();
         
         $systemUser = User::create([
             'id' => 1,
