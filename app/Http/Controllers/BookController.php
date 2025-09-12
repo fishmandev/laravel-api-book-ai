@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
-class BookController extends Controller
+class BookController
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +18,6 @@ class BookController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-        // Check books.list permission
-        $this->authorize('books.list');
-
         // Get paginated books
         $books = Book::paginate(10);
 
@@ -33,9 +30,6 @@ class BookController extends Controller
      */
     public function store(StoreBookRequest $request): JsonResponse
     {
-        // Check books.create permission
-        $this->authorize('books.create');
-
         // Create book with validated data
         $book = Book::create($request->validated());
 
@@ -53,8 +47,6 @@ class BookController extends Controller
      */
     public function show(Book $book): BookResource
     {
-        // Check books.view permission
-        $this->authorize('books.view');
 
         return new BookResource($book);
     }
@@ -65,9 +57,6 @@ class BookController extends Controller
      */
     public function update(UpdateBookRequest $request, Book $book): BookResource
     {
-        // Check books.edit permission
-        $this->authorize('books.edit');
-
         // Update book with validated data
         $book->update($request->validated());
 
@@ -83,9 +72,6 @@ class BookController extends Controller
      */
     public function destroy(Book $book): JsonResponse
     {
-        // Check books.delete permission
-        $this->authorize('books.delete');
-
         // Delete book object
         $book->delete();
 
